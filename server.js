@@ -23,6 +23,13 @@ app.get("/cursos/:id", (req, res) => {
     }
     res.json(curso);
 });
+// Exemplo de requisição: curl --location 'http://localhost:3000/cursos' --header 'Content-Type: application/json' --data '{ "nome": "Banco de Dados", "cargaHoraria": "80", "nivel": "INTERMEDIARIO"}'
+app.post("/cursos", (req, res) => {
+    const novoCurso = req.body;
+    // cursos.push(novoCurso);
+    console.log("Curso recebido: ", novoCurso);
+    res.status(200).json(novoCurso);
+});
 
 const PORT = 3000;
 
