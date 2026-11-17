@@ -24,19 +24,33 @@ app.get("/cursos/:id", (req, res) => {
     }
     res.json(curso);
 });
+
 // Exemplo de requisição: curl --location 'http://localhost:3000/cursos' --header 'Content-Type: application/json' --data '{ "nome": "Banco de Dados", "cargaHoraria": "80", "nivel": "INTERMEDIARIO"}'
 app.post("/cursos", (req, res) => {
     const novoCurso = req.body;
-    const {nome, cargaHoraria, nivel} = novoCurso;
+    const {nome, cargaHoraria, nivel, preco, ativo} = novoCurso;
+
+    const erros = [];
     if(nome.trim().length <=3 || nome.trim().length >= 80){
-        return res.status(400).json({ error: "O nome do curso deve ser uma string entre 3 e 80 caracteres." });
+        erros.push("O nome do curso deve ser uma string entre 3 e 80 caracteres.");
     }
     if(cargaHoraria <= 20 || cargaHoraria >= 400){
-        return res.status(400).json({ error: "A carga horária deve ser um número positivo entre 20 e 400." });
+        erros.push("A carga horária deve ser um número positivo entre 20 e 400.");
     }
     if(!["BASICO", "INTERMEDIARIO", "AVANCADO"].includes(nivel)){
-        return res.status(400).json({ error: "O nível do curso deve ser 'BASICO', 'INTERMEDIARIO' ou 'AVANCADO'." });
+        erros.push("O nível do curso deve ser 'BASICO', 'INTERMEDIARIO' ou 'AVANCADO'.");
     }
+    if(!Number(preco) || preco < 0){
+        erros.push("O preco deve ser um valor válido");
+    }
+    if(ativo != true && ativo != false){
+        erros.push("O campo ativo ser igual a true ou false");
+    }
+
+    if (erros.length > 0) {
+        return res.status(400).json({ erros: erros });
+    }
+    
     cursos.push(novoCurso);
     res.status(201).json(novoCurso);
 });
