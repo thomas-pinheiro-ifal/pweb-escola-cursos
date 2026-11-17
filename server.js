@@ -55,6 +55,43 @@ app.post("/cursos", (req, res) => {
     res.status(201).json(novoCurso);
 });
 
+// Exemplo de requisição: curl --location 'http://localhost:3000/cursos' --header 'Content-Type: application/json' --data '{ "nome": "Banco de Dados", "cargaHoraria": "80", "nivel": "INTERMEDIARIO"}'
+app.put("/cursos/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const curso = cursos.find(c => c.id === id);
+    if (!curso) {
+        res.status(404).json({ error: "Curso não encontrado" });
+    }
+
+
+    const atualizaCurso = req.body;
+    const {nome, cargaHoraria, nivel, preco, ativo} = atualizaCurso;
+
+    const erros = [];
+    if(nome.trim().length <=3 || nome.trim().length >= 80){
+        erros.push("O nome do curso deve ser uma string entre 3 e 80 caracteres.");
+    }
+    if(cargaHoraria <= 20 || cargaHoraria >= 400){
+        erros.push("A carga horária deve ser um número positivo entre 20 e 400.");
+    }
+    if(!["BASICO", "INTERMEDIARIO", "AVANCADO"].includes(nivel)){
+        erros.push("O nível do curso deve ser 'BASICO', 'INTERMEDIARIO' ou 'AVANCADO'.");
+    }
+    if(!Number(preco) || preco < 0){
+        erros.push("O preco deve ser um valor válido");
+    }
+    if(ativo != true && ativo != false){
+        erros.push("O campo ativo ser igual a true ou false");
+    }
+
+    if (erros.length > 0) {
+        return res.status(400).json({ erros: erros });
+    }
+    
+    cursos.push(atualizaCurso);
+    res.status(201).json(atualizaCurso);
+});
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
