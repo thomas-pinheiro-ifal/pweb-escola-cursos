@@ -95,9 +95,13 @@ app.put("/cursos/:id", (req, res) => {
     if (erros.length > 0) {
         return res.status(400).json({ erros: erros });
     }
-    
-    cursos.push(atualizaCurso);
-    res.status(201).json(atualizaCurso);
+    curso.nome = nome;
+    curso.cargaHoraria = cargaHoraria;
+    curso.nivel = nivel;
+    curso.preco = preco;
+    curso.ativo = ativo;
+    cursos.push(curso);
+    res.status(201).json(curso);
 });
 
 
