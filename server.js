@@ -43,7 +43,7 @@ app.post("/cursos", (req, res) => {
     if(!Number(preco) || preco < 0){
         erros.push("O preco deve ser um valor válido");
     }
-    if(ativo != true && ativo != false){
+    if(typeof ativo !== "boolean"){
         erros.push("O campo ativo ser igual a true ou false");
     }
 
@@ -51,7 +51,15 @@ app.post("/cursos", (req, res) => {
         return res.status(400).json({ erros: erros });
     }
     
-    cursos.push(novoCurso);
+    const novo = {
+      id: cursos.length ? cursos[cursos.length - 1].id + 1 : 1,
+      nome,
+      cargaHoraria,
+      nivel,
+      preco,
+      ativo,
+    };
+    cursos.push(novo);
     res.status(201).json(novoCurso);
 });
 
